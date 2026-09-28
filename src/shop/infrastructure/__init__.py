@@ -1,0 +1,1 @@
+"""Django ORM adapters for the shop domain contracts."""

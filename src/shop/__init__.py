@@ -1,0 +1,1 @@
+"""Art Decor storefront domain and Django application."""

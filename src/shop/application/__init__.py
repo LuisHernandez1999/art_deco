@@ -1,0 +1,1 @@
+"""Use cases that coordinate storefront domain operations."""

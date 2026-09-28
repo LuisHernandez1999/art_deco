@@ -1,0 +1,29 @@
+{% if carousel_slides %}
+<section class="editorial-carousel" data-carousel data-interval="6500" aria-label="Galeria Art Decor" aria-roledescription="carrossel">
+  <div class="carousel-stage">
+    {% for slide in carousel_slides %}
+    <article class="carousel-slide{% if forloop.first %} is-active{% endif %}" data-carousel-slide aria-roledescription="slide" aria-label="{{ forloop.counter }} de {{ carousel_slides|length }}"{% if not forloop.first %} hidden aria-hidden="true"{% else %} aria-hidden="false"{% endif %}>
+      <div class="carousel-copy">
+        {% if slide.eyebrow %}<span class="eyebrow"><i></i>{{ slide.eyebrow }}</span>{% endif %}
+        <h1>{{ slide.title }}{% if slide.accent %}<br><em>{{ slide.accent }}</em>{% endif %}</h1>
+        {% if slide.copy %}<p>{{ slide.copy }}</p>{% endif %}
+        {% if slide.button_label and slide.button_url %}<a class="button button-gold" href="{{ slide.button_url }}">{{ slide.button_label }} <span aria-hidden="true">↗</span></a>{% endif %}
+        <div class="carousel-controls">
+          <div class="carousel-counter"><span data-carousel-current>{{ forloop.counter|stringformat:"02d" }}</span><i></i><span>{{ carousel_slides|length|stringformat:"02d" }}</span></div>
+          {% if carousel_slides|length > 1 %}
+          <div class="carousel-buttons">
+            <button class="carousel-control" type="button" data-carousel-previous aria-label="Imagem anterior" title="Imagem anterior"><svg class="icon"><use href="#icon-previous"></use></svg></button>
+            <button class="carousel-control" type="button" data-carousel-next aria-label="Próxima imagem" title="Próxima imagem"><svg class="icon"><use href="#icon-next"></use></svg></button>
+            <button class="carousel-control carousel-pause" type="button" data-carousel-pause aria-label="Pausar apresentação" title="Pausar apresentação"><svg class="icon"><use href="#icon-pause"></use></svg></button>
+          </div>
+          {% endif %}
+        </div>
+        {% if carousel_slides|length > 1 %}<nav class="carousel-dots" aria-label="Escolher imagem">{% for item in carousel_slides %}<button type="button" data-carousel-to="{{ forloop.counter0 }}"{% if forloop.first %} aria-current="true"{% else %} aria-current="false"{% endif %} aria-label="Mostrar imagem {{ forloop.counter }}"></button>{% endfor %}</nav>{% endif %}
+      </div>
+      <div class="carousel-media"><img src="{{ slide.image_url }}" alt="{{ slide.image_alt }}"{% if forloop.first %} fetchpriority="high"{% else %} loading="lazy"{% endif %} decoding="async"><span class="carousel-photo-index">ART DECOR <i>·</i> {{ forloop.counter|stringformat:"02d" }}</span></div>
+    </article>
+    {% endfor %}
+  </div>
+  <div class="carousel-progress" aria-hidden="true"><span data-carousel-progress></span></div>
+</section>
+{% endif %}

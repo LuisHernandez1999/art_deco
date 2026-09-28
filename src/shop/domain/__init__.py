@@ -1,0 +1,1 @@
+"""Core catalog and order concepts, independent of Django persistence."""

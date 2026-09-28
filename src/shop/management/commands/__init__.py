@@ -1,0 +1,1 @@
+"""Shop-specific Django management commands."""
