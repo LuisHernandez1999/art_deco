@@ -5,6 +5,7 @@ class CarouselSlide(models.Model):
     class Page(models.TextChoices):
         HOME = "home", "Página inicial"
         ABOUT = "about", "Sobre"
+        ABOUT_SECONDARY = "about_2", "Sobre — segundo carrossel"
 
     page = models.CharField(max_length=12, choices=Page.choices, db_index=True)
     eyebrow = models.CharField(max_length=80, blank=True)

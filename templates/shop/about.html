@@ -1,11 +1,69 @@
 {% extends 'shop/base.html' %}
-{% block title %}Sobre a Art Decor | Feito para transformar{% endblock %}
-{% block content %}
 {% load static %}
-{% if carousel_slides %}{% include 'shop/_carousel.html' %}{% else %}
-<section class="about-fallback" aria-labelledby="about-title"><div class="about-fallback-copy"><span class="eyebrow dark-eyebrow">ART DECOR / ART CIMENTO</span><h1 id="about-title">Gesso, cimento e fibra <em>para compor espaços.</em></h1><p>Um trabalho que começa na conversa e se revela nos detalhes do acabamento.</p><a class="text-link" href="{% url 'shop:information' %}">Fale com a equipe <span>↗</span></a></div><div class="about-fallback-image"><img src="{% static 'shop/img/artdecor-interior.webp' %}" alt="Peças de acabamento em gesso organizadas no espaço de trabalho"></div></section>
-{% endif %}
-<section class="about-story section-wrap"><div class="story-index">01 <span>CAPÍTULO</span></div><div class="story-copy"><span class="eyebrow dark-eyebrow">ART DECOR / ART CIMENTO</span><h2>Uma casa bonita<br>tem a sua <em>marca.</em></h2><p>Por trás de cada moldura, sanca ou peça decorativa existe uma escolha: fazer com atenção, respeitar o espaço e entregar um acabamento que faça sentido para quem vive ali.</p><p>Trabalhamos com construção, reformas e decoração. Do reparo pontual ao detalhe que muda um ambiente inteiro, cada projeto começa com uma conversa.</p></div><div class="story-aside"><span class="quote-mark">“</span><p>Seu espaço, seu jeito.<br>Nosso cuidado em cada etapa.</p><span>GESSO · CIMENTO · FIBRA</span></div></section>
-<section class="about-values"><div><span class="eyebrow">01 / MATÉRIA</span><h2>Textura que<br>convida a olhar.</h2><p>Gesso, cimento e fibra de vidro trabalhados para unir presença e delicadeza.</p></div><div><span class="eyebrow">02 / OFÍCIO</span><h2>Capricho do começo<br>ao acabamento.</h2><p>Escuta, medida e execução cuidadosa para que cada detalhe fique no lugar.</p></div><div><span class="eyebrow">03 / VOCÊ</span><h2>Feito junto,<br>feito para ficar.</h2><p>O melhor resultado começa entendendo o que você imaginou para seu ambiente.</p></div></section>
-<section class="about-cta"><span class="eyebrow">TEM UMA IDEIA EM MENTE?</span><h2>Vamos dar forma<br>a ela <em>juntos.</em></h2><a class="button button-gold" href="https://wa.me/{{ whatsapp_number }}" target="_blank" rel="noopener">Fale com a equipe <span>↗</span></a></section>
+{% block title %}Nossa história | Art Decor{% endblock %}
+{% block content %}
+<div class="about-page">
+  <section class="about-opening" aria-labelledby="about-title">
+    <div class="about-opening-inner">
+      <div class="about-opening-kicker"><span>ART DECOR <i>/</i> ART CIMENTO</span><span>GESSO · CIMENTO · ACABAMENTOS</span></div>
+      <div class="about-opening-copy">
+        <span class="eyebrow">A LOJA POR TRÁS DOS ACABAMENTOS</span>
+        <h1 id="about-title">Da moldura ao cimento: conheça a <em>Art Decor.</em></h1>
+        <p>Uma loja para quem está construindo ou reformando. Aqui você encontra acabamentos em gesso, peças em cimento e fibra de vidro, além de atendimento para serviços da obra.</p>
+        <a class="about-opening-link" href="#about-history">Como trabalhamos <span aria-hidden="true">↓</span></a>
+      </div>
+      <figure class="about-opening-photo">
+        <img src="{% static 'shop/img/artdecor-profile-work.jpg' %}" alt="Perfis de gesso organizados no espaço de trabalho da Art Decor" fetchpriority="high">
+        <figcaption><span>PERFIS DECORATIVOS EM GESSO</span><span>ART DECOR · GOIÁS</span></figcaption>
+      </figure>
+      <div class="about-opening-foot"><span>CATÁLOGO E SERVIÇOS</span><span>MOLDURAS · SANCAS · CIMENTO · FIBRA</span></div>
+    </div>
+  </section>
+
+  <section class="about-history section-wrap" id="about-history" aria-labelledby="about-history-title">
+    <div class="about-history-index"><span>CAPÍTULO 01</span><span class="about-history-number">A.</span><span>ART DECOR / ART CIMENTO</span></div>
+    <div class="about-history-copy">
+      <span class="eyebrow dark-eyebrow">A ART DECOR NO DIA A DIA</span>
+      <h2 id="about-history-title">A escolha do acabamento faz parte da <em>obra inteira.</em></h2>
+      <p>A Art Decor trabalha com quem procura molduras, sancas, boiseries, painéis e peças decorativas em gesso, cimento e fibra de vidro. O catálogo convive com serviços de construção, reforma e reparo em gesso — diferentes necessidades reunidas no mesmo atendimento.</p>
+      <p>Como medidas, disponibilidade e instalação mudam de um projeto para outro, a conversa também faz parte do trabalho. Fotos e medidas aproximadas ajudam a equipe a entender o espaço e orientar o orçamento antes de você aprovar o pedido.</p>
+      <a class="text-link" href="{% url 'shop:information' %}">Veja como funciona o atendimento <span aria-hidden="true">↗</span></a>
+    </div>
+    <aside class="about-history-note"><span class="eyebrow dark-eyebrow">ATENDIMENTO EM GOIÁS</span><strong>{{ whatsapp_display }}</strong><p>Consulte o catálogo, a disponibilidade de peças e os serviços para sua obra.</p><a href="https://wa.me/{{ whatsapp_number }}" target="_blank" rel="noopener">Fale no WhatsApp <span aria-hidden="true">↗</span></a></aside>
+  </section>
+
+  {% if about_carousel_slides %}{% include 'shop/_about_carousel.html' with carousel_slides=about_carousel_slides tone='light' %}{% endif %}
+
+  <section class="about-offerings" aria-labelledby="about-offerings-title">
+    <div class="about-section-inner">
+      <div class="about-section-heading">
+        <div><span class="eyebrow dark-eyebrow">O QUE TEM NA LOJA</span><h2 id="about-offerings-title">Três frentes.<br><em>Uma só equipe.</em></h2></div>
+        <p>O mix combina peças para acabamento, materiais decorativos e serviços em gesso. A equipe ajuda a identificar o que atende melhor à etapa da sua obra.</p>
+      </div>
+      <div class="about-offering-grid">
+        <article class="about-offering"><span class="about-offering-number">01</span><div class="about-offering-kind"><span>ACABAMENTOS EM GESSO</span><h3>Molduras, sancas e painéis</h3></div><p>Perfis decorativos, boiseries e sancas para compor paredes e tetos. Medidas e opções são alinhadas conforme o ambiente.</p><a href="{% url 'shop:catalog' %}?categoria=molduras" aria-label="Ver acabamentos em gesso no catálogo">↗</a></article>
+        <article class="about-offering"><span class="about-offering-number">02</span><div class="about-offering-kind"><span>PEÇAS DECORATIVAS</span><h3>Cimento e fibra de vidro</h3></div><p>Peças para áreas internas e externas, com disponibilidade, dimensões e acabamento confirmados por item.</p><a href="{% url 'shop:catalog' %}?categoria=jardim" aria-label="Ver peças decorativas no catálogo">↗</a></article>
+        <article class="about-offering"><span class="about-offering-number">03</span><div class="about-offering-kind"><span>SERVIÇOS PARA A OBRA</span><h3>Instalação e reparos em gesso</h3></div><p>Serviços para construção e reforma. Envie fotos e medidas aproximadas para uma avaliação inicial.</p><a href="{% url 'shop:information' %}" aria-label="Consultar serviços e atendimento">↗</a></article>
+      </div>
+      <a class="about-all-link" href="{% url 'shop:catalog' %}">Explore o catálogo <span aria-hidden="true">↗</span></a>
+    </div>
+  </section>
+
+  {% if about_second_carousel_slides %}{% include 'shop/_about_carousel.html' with carousel_slides=about_second_carousel_slides tone='deep' %}{% endif %}
+
+  <section class="about-approach section-wrap" aria-labelledby="about-approach-title">
+    <div class="about-approach-heading"><span class="eyebrow dark-eyebrow">ANTES DE FECHAR O PEDIDO</span><h2 id="about-approach-title">Da sua ideia ao <em>orçamento.</em></h2><p>Cada item pode ter medidas, prazo e instalação diferentes. Este é o caminho para a equipe analisar o seu caso.</p></div>
+    <div class="about-steps">
+      <article><span>01</span><div><h3>Envie fotos e medidas</h3><p>Uma imagem do local e medidas aproximadas ajudam a equipe a entender o que você precisa.</p></div></article>
+      <article><span>02</span><div><h3>Alinhe material e serviço</h3><p>A equipe confirma opções, disponibilidade e detalhes de instalação ou entrega quando aplicável.</p></div></article>
+      <article><span>03</span><div><h3>Aprove com tudo claro</h3><p>O valor final e as condições são apresentados para você antes de confirmar o pedido ou serviço.</p></div></article>
+    </div>
+  </section>
+
+  <section class="about-promise" aria-label="Nosso compromisso">
+    <div class="about-promise-label"><span class="eyebrow">FALE DIRETO COM A LOJA</span><span>ART DECOR · GOIÁS</span></div>
+    <div class="about-promise-copy"><h2>Seu projeto começa com uma boa conversa.</h2><p>Consulte peças, tire dúvidas ou envie fotos e medidas para pedir um orçamento.</p></div>
+    <div class="about-promise-actions"><a class="button button-outline-light" href="https://wa.me/{{ whatsapp_number }}" target="_blank" rel="noopener">Chamar no WhatsApp <span aria-hidden="true">↗</span></a><a href="{{ instagram_url }}" target="_blank" rel="noopener">Instagram <span aria-hidden="true">↗</span></a></div>
+  </section>
+</div>
 {% endblock %}

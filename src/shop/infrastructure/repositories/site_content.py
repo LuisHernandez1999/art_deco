@@ -1,4 +1,4 @@
-from shop.infrastructure.mappers.site_content import to_carousel_slide
+from shop.infrastructure.mappers.carousel_slide import to_carousel_slide
 from shop.models import CarouselSlide as CarouselSlideModel
 
 

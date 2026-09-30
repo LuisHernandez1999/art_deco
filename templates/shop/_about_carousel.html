@@ -1,0 +1,16 @@
+<section class="about-carousel about-carousel--{{ tone }}" data-carousel data-interval="6500" aria-label="Galeria Art Decor" aria-roledescription="carrossel">
+  <div class="about-carousel-stage">
+    {% for slide in carousel_slides %}
+    <article class="about-carousel-slide{% if forloop.first %} is-active{% endif %}" data-carousel-slide aria-roledescription="slide" aria-label="{{ forloop.counter }} de {{ carousel_slides|length }}"{% if not forloop.first %} hidden aria-hidden="true"{% else %} aria-hidden="false"{% endif %}>
+      <div class="about-carousel-visual carousel-media"><img src="{{ slide.image_url }}" alt="{{ slide.image_alt }}"{% if forloop.first %} fetchpriority="high"{% else %} loading="lazy"{% endif %} decoding="async"></div>
+      <div class="about-carousel-story">
+        {% if slide.eyebrow %}<span class="eyebrow">{{ slide.eyebrow }}</span>{% endif %}
+        <h2>{{ slide.title }}{% if slide.accent %}<br><em>{{ slide.accent }}</em>{% endif %}</h2>
+        {% if slide.copy %}<p>{{ slide.copy }}</p>{% endif %}
+        {% if slide.button_label and slide.button_url %}<a class="text-link" href="{{ slide.button_url }}">{{ slide.button_label }} <span aria-hidden="true">↗</span></a>{% endif %}
+        <span class="about-carousel-signature">ART DECOR <i>/</i> ART CIMENTO</span>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>

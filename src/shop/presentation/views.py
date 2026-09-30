@@ -25,7 +25,8 @@ def home(request):
 
 def about(request):
     return render(request, "shop/about.html", {
-        "carousel_slides": site_content_repository.list_carousel("about"),
+        "about_carousel_slides": site_content_repository.list_carousel("about"),
+        "about_second_carousel_slides": site_content_repository.list_carousel("about_2"),
     })
 
 

@@ -2,7 +2,12 @@ from decimal import Decimal
 
 from django.db import transaction
 
-from shop.domain.entities.orders import OrderConfirmation, OrderReceipt
+from shop.infrastructure.mappers.order_items import to_order_item_model, to_order_line
+from shop.infrastructure.mappers.orders import (
+    to_order_confirmation,
+    to_order_model,
+    to_order_receipt,
+)
 from shop.models import Order, OrderItem, Product
 
 
@@ -17,45 +22,29 @@ class DjangoOrderRepository:
         if len(products) != len(product_ids):
             raise ValueError("Um dos itens não está mais disponível. Atualize seu carrinho.")
 
-        order_lines = []
-        total = Decimal("0.00")
-        for line in lines:
-            product = products[line.product_id]
-            unit_price = product.price_from
-            if unit_price is not None:
-                total += unit_price * line.quantity
-            order_lines.append((product, line.quantity, unit_price))
-
-        order = Order.objects.create(
+        order_lines = [to_order_line(products[line.product_id], line) for line in lines]
+        total = sum(
+            (line.total for line in order_lines if line.total is not None),
+            Decimal("0.00"),
+        )
+        order = to_order_model(
             customer_name=customer_name,
             phone=phone,
             address=address,
             city=city,
             notes=notes,
-            payment_method=payment_method.value,
+            payment_method=payment_method,
             total=total,
         )
+        order.save()
         OrderItem.objects.bulk_create([
-            OrderItem(
-                order=order,
-                product=product,
-                product_name=product.name,
-                quantity=quantity,
-                unit_price=unit_price,
-                requires_quote=unit_price is None,
-            )
-            for product, quantity, unit_price in order_lines
+            to_order_item_model(order, products[line.product_id], line)
+            for line in order_lines
         ])
-        return OrderReceipt(reference=order.reference, total=total)
+        return to_order_receipt(order)
 
     def get_order(self, reference):
         order = Order.objects.filter(reference=reference).first()
         if order is None:
             return None
-        return OrderConfirmation(
-            reference=order.reference,
-            customer_name=order.customer_name,
-            created_at=order.created_at,
-            payment_method=order.payment_method,
-            payment_method_display=order.get_payment_method_display(),
-        )
+        return to_order_confirmation(order)

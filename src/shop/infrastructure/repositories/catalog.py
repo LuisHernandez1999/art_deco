@@ -2,7 +2,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 from shop.domain.entities.catalog import CatalogPage
-from shop.infrastructure.mappers.catalog import to_product
+from shop.infrastructure.mappers.product import to_product
 from shop.models import Product as ProductModel
 
 

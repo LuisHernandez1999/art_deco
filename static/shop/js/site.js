@@ -108,84 +108,37 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
 
   const interval = Number(carousel.dataset.interval) || 6500;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const indicators = [...carousel.querySelectorAll('[data-carousel-to]')];
-  const pauseButtons = [...carousel.querySelectorAll('[data-carousel-pause]')];
-  const progress = carousel.querySelector('[data-carousel-progress]');
   let activeIndex = 0;
   let timer;
-  let paused = prefersReducedMotion;
   let pointerStart;
 
   carousel.style.setProperty('--carousel-duration', `${interval}ms`);
 
-  function updatePauseControls() {
-    pauseButtons.forEach((button) => {
-      const label = paused ? 'Retomar apresentação' : 'Pausar apresentação';
-      button.setAttribute('aria-label', label);
-      button.title = label;
-      button.querySelector('use')?.setAttribute('href', paused ? '#icon-play' : '#icon-pause');
-    });
-  }
-
-  function restartProgress() {
-    carousel.classList.remove('is-playing');
-    if (progress) void progress.offsetWidth;
-    if (!paused) carousel.classList.add('is-playing');
-  }
-
-  function showSlide(index, restart = true) {
+  function showSlide(index) {
     activeIndex = (index + slides.length) % slides.length;
     slides.forEach((slide, slideIndex) => {
       const active = slideIndex === activeIndex;
       slide.hidden = !active;
       slide.setAttribute('aria-hidden', String(!active));
       slide.classList.toggle('is-active', active);
-      const current = slide.querySelector('[data-carousel-current]');
-      if (current) current.textContent = String(activeIndex + 1).padStart(2, '0');
     });
-    indicators.forEach((indicator, indicatorIndex) => {
-      indicator.setAttribute('aria-current', String(indicatorIndex === activeIndex));
-    });
-    if (restart) restartProgress();
   }
 
   function stopTimer() {
     window.clearInterval(timer);
-    carousel.classList.remove('is-playing');
   }
 
   function startTimer() {
     stopTimer();
-    if (paused || document.hidden) return;
-    restartProgress();
-    timer = window.setInterval(() => showSlide(activeIndex + 1, false), interval);
+    if (prefersReducedMotion || document.hidden) return;
+    timer = window.setInterval(() => showSlide(activeIndex + 1), interval);
   }
 
-  carousel.querySelectorAll('[data-carousel-previous]').forEach((button) => {
-    button.addEventListener('click', () => {
-      showSlide(activeIndex - 1);
-      startTimer();
-    });
-  });
-  carousel.querySelectorAll('[data-carousel-next]').forEach((button) => {
-    button.addEventListener('click', () => {
-      showSlide(activeIndex + 1);
-      startTimer();
-    });
-  });
-  indicators.forEach((button) => {
-    button.addEventListener('click', () => {
-      showSlide(Number(button.dataset.carouselTo));
-      startTimer();
-    });
-  });
-  pauseButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      paused = !paused;
-      carousel.classList.toggle('is-paused', paused);
-      updatePauseControls();
-      startTimer();
-    });
+  carousel.addEventListener('mouseenter', stopTimer);
+  carousel.addEventListener('mouseleave', startTimer);
+  carousel.addEventListener('focusin', stopTimer);
+  carousel.addEventListener('focusout', (event) => {
+    if (!carousel.contains(event.relatedTarget)) startTimer();
   });
 
   const media = carousel.querySelector('.carousel-media');
@@ -193,9 +146,14 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     pointerStart = event.clientX;
   });
   media?.addEventListener('pointerup', (event) => {
-    if (pointerStart === undefined || Math.abs(event.clientX - pointerStart) < 45) return;
-    showSlide(activeIndex + (event.clientX < pointerStart ? 1 : -1));
+    if (pointerStart === undefined) return;
+    const distance = event.clientX - pointerStart;
     startTimer();
+    pointerStart = undefined;
+    if (Math.abs(distance) < 45) return;
+    showSlide(activeIndex + (distance < 0 ? 1 : -1));
+  });
+  media?.addEventListener('pointercancel', () => {
     pointerStart = undefined;
   });
 
@@ -203,7 +161,6 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     if (document.hidden) stopTimer();
     else startTimer();
   });
-  updatePauseControls();
-  showSlide(0, false);
+  showSlide(0);
   startTimer();
 });
