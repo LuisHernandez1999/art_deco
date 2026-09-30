@@ -102,21 +102,6 @@ document.addEventListener('submit', async (event) => {
 
 window.addEventListener('pageshow', stopPageLoading);
 
-const logoImage = document.querySelector('.brand-logo');
-if (logoImage && window.matchMedia('(pointer: fine)').matches) {
-  logoImage.addEventListener('pointermove', (event) => {
-    const bounds = logoImage.getBoundingClientRect();
-    const rotateY = ((event.clientX - bounds.left) / bounds.width - 0.5) * 10;
-    const rotateX = (0.5 - (event.clientY - bounds.top) / bounds.height) * 10;
-    logoImage.style.setProperty('--logo-rotate-x', `${rotateX}deg`);
-    logoImage.style.setProperty('--logo-rotate-y', `${rotateY}deg`);
-  });
-  logoImage.addEventListener('pointerleave', () => {
-    logoImage.style.removeProperty('--logo-rotate-x');
-    logoImage.style.removeProperty('--logo-rotate-y');
-  });
-}
-
 document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   const slides = [...carousel.querySelectorAll('[data-carousel-slide]')];
   if (slides.length < 2) return;

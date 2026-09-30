@@ -1,8 +1,9 @@
-from shop.domain.entities import OrderLineRequest, PaymentMethod
+from shop.domain.entities.orders import OrderLineRequest, PaymentMethod
+from shop.domain.repositories.orders import OrderRepository
 
 
 class PlaceOrder:
-    def __init__(self, repository):
+    def __init__(self, repository: OrderRepository):
         self.repository = repository
 
     def execute(self, *, customer_name, phone, address, city, notes, payment_method, cart):

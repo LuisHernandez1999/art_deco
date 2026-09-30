@@ -26,9 +26,12 @@ Abra `http://127.0.0.1:8000/`. O painel administrativo fica em `/admin/`; crie u
 
 ## Estrutura
 
-- `src/shop/domain`: entidades, valores de domínio e contratos dos repositórios.
-- `src/shop/application`: casos de uso, incluindo validação e envio de pedidos.
-- `src/shop/infrastructure`: adaptadores Django/ORM e persistência.
+- `src/shop/models`: modelos ORM Django separados por produto, conteúdo do site e pedidos. `shop.models` continua exportando as classes para o admin, comandos e integrações existentes.
+- `src/shop/domain/entities`: entidades e valores de domínio separados por catálogo, carrinho, pedidos e conteúdo do site.
+- `src/shop/domain/repositories`: contratos dos repositórios por área do domínio.
+- `src/shop/application/use_cases`: casos de uso separados por fluxo, incluindo composição do carrinho e envio de pedidos.
+- `src/shop/infrastructure/mappers`: conversões entre registros Django e entidades do domínio.
+- `src/shop/infrastructure/repositories`: implementações Django dos contratos de catálogo, pedidos e conteúdo do site.
 - `src/shop/presentation`: views, rotas e contexto dos templates.
 - `templates/shop`: páginas Django renderizadas no servidor.
 - `static/shop`: identidade visual, JavaScript e imagens locais do perfil público da marca.

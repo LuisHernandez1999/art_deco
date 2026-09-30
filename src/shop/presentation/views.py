@@ -2,19 +2,17 @@ from uuid import UUID
 
 from django.contrib import messages
 from django.http import Http404, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect, render
 
-from shop.application.use_cases import PlaceOrder
-from shop.infrastructure.django_repositories import (
-    DjangoCatalogRepository,
-    DjangoOrderRepository,
-    DjangoSiteContentRepository,
-)
-from shop.models import Order, Product
+from shop.application.use_cases import BuildCart, PlaceOrder
+from shop.infrastructure.repositories.catalog import DjangoCatalogRepository
+from shop.infrastructure.repositories.orders import DjangoOrderRepository
+from shop.infrastructure.repositories.site_content import DjangoSiteContentRepository
 
 
 catalog_repository = DjangoCatalogRepository()
 site_content_repository = DjangoSiteContentRepository()
+order_repository = DjangoOrderRepository()
 
 
 def home(request):
@@ -48,7 +46,7 @@ def catalog(request):
         query_params = request.GET.copy()
         query_params["page"] = page_number
         page_links.append({"number": page_number, "url": f"?{query_params.urlencode()}", "current": page_number == page.number})
-    categories = Product.Category.choices
+    categories = catalog_repository.list_categories()
     return render(request, "shop/catalog.html", {
         "products": page.items,
         "catalog_page": page,
@@ -70,26 +68,12 @@ def product_detail(request, slug):
 
 
 def cart_contents(request):
-    cart = request.session.get("cart", {})
-    products_by_id = {
-        str(product.pk): product
-        for product in Product.objects.filter(pk__in=cart, is_active=True)
+    summary = BuildCart(catalog_repository).execute(request.session.get("cart", {}))
+    return {
+        "lines": summary.lines,
+        "total": summary.total,
+        "quote_needed": summary.quote_needed,
     }
-    lines = []
-    total = 0
-    quote_needed = False
-    for product_id, quantity in cart.items():
-        product = products_by_id.get(str(product_id))
-        if product is None:
-            continue
-        quantity = int(quantity)
-        line_total = product.price_from * quantity if product.price_from is not None else None
-        if line_total is None:
-            quote_needed = True
-        else:
-            total += line_total
-        lines.append({"product": product, "quantity": quantity, "line_total": line_total})
-    return {"lines": lines, "total": total, "quote_needed": quote_needed}
 
 
 def cart(request):
@@ -99,9 +83,11 @@ def cart(request):
 def cart_add(request, slug):
     if request.method != "POST":
         raise Http404
-    product = get_object_or_404(Product, slug=slug, is_active=True)
+    product = catalog_repository.get_by_slug(slug)
+    if product is None:
+        raise Http404
     cart = request.session.get("cart", {})
-    product_id = str(product.pk)
+    product_id = str(product.id)
     cart[product_id] = min(int(cart.get(product_id, 0)) + 1, 20)
     request.session["cart"] = cart
     message = f"{product.name} foi adicionado ao seu pedido."
@@ -145,7 +131,7 @@ def checkout(request):
 
     if request.method == "POST":
         try:
-            receipt = PlaceOrder(DjangoOrderRepository()).execute(
+            receipt = PlaceOrder(order_repository).execute(
                 customer_name=request.POST.get("customer_name", ""),
                 phone=request.POST.get("phone", ""),
                 address=request.POST.get("address", ""),
@@ -168,7 +154,7 @@ def order_confirmation(request, reference):
         reference = UUID(str(reference))
     except ValueError as error:
         raise Http404 from error
-    order = DjangoOrderRepository().get_order(reference)
+    order = order_repository.get_order(reference)
     if order is None:
         raise Http404
     return render(request, "shop/order_confirmation.html", {"order": order})

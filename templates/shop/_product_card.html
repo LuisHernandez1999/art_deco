@@ -1,13 +1,13 @@
 <article class="product-card">
-  <a class="product-image" href="{% url 'shop:product_detail' product.slug %}">
+  <a class="product-image" href="{% url 'shop:product_detail' product.slug %}" aria-label="Ver {{ product.name }}">
     {% if product.image_url %}<img src="{{ product.image_url }}" alt="{{ product.image_alt|default:product.name }}" loading="lazy">{% else %}<span class="image-placeholder">ART<br>DECOR</span>{% endif %}
     <span class="image-arrow" aria-hidden="true">↗</span>
   </a>
-  <div class="product-meta"><span>{{ product.get_category_display }}</span>{% if product.price_from %}<span>A PARTIR DE</span>{% else %}<span>SOB MEDIDA</span>{% endif %}</div>
+  <div class="product-meta"><span>{{ product.category }}</span><span>{% if product.price_from %}A partir de{% else %}Sob medida{% endif %}</span></div>
   <h3><a href="{% url 'shop:product_detail' product.slug %}">{{ product.name }}</a></h3>
   <p>{{ product.summary }}</p>
   <div class="product-card-bottom">
     <strong>{% if product.price_from %}R$ {{ product.price_from|floatformat:2 }}{% else %}Consulte{% endif %}</strong>
-    <form method="post" action="{% url 'shop:cart_add' product.slug %}" data-cart-add>{% csrf_token %}<button class="icon-button" type="submit" aria-label="Adicionar {{ product.name }} ao pedido" title="Adicionar ao pedido">+</button></form>
+    <form method="post" action="{% url 'shop:cart_add' product.slug %}" data-cart-add>{% csrf_token %}<button class="product-action" type="submit" aria-label="Adicionar {{ product.name }} ao pedido"><span>Adicionar</span><span aria-hidden="true">+</span></button></form>
   </div>
 </article>
